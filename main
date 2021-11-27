@@ -3,14 +3,14 @@ using namespace std;
 
 class marks {
   private:
-    string name;
+    char name[20];
   int rollno;
   int computerProgramming;
   int maths;
   int reportWriting;
-  int thermodynamics;
   int biology;
-  float percent;
+  int thermodynamics;
+  
   public:
     int getRoll();
   void dataMenu();
@@ -47,6 +47,7 @@ void marks::dataMenu() {
     cout << "--------------------------------------------------------------------------------" << endl;
     cin >> choice;
     switch (choice) {
+
     case 1:
       s.addData();
       break;
@@ -72,13 +73,10 @@ void marks::dataMenu() {
     cout << "Continue Browsing?  (Y/N)" << endl;
     cin >> ch;
     
-  
   } while (ch == 'y' || ch == 'Y');
-
 }
 
 void marks::addData() {
-
   char ans = 'y';
   fstream fout("STU.dat", ios::app | ios::binary);
   while (ans == 'y' || ans == 'Y') {
@@ -90,23 +88,19 @@ void marks::addData() {
     cout << "Want to Add more [Y/N]:";
     cin >> ans;
     cout << endl;
-
   }
-
   fout.close();
   
   m.dataMenu();
-
 }
 
 void marks::modifyData() {
-  char f = 'n';
-  string nm;
+  char f = 'n', nm[20];
   marks s1;
-  int r, rn, cp, maths, trw, thermo, bio;
+  int r, rn, cp, math, thermo, bio, trw;
   long pos;
   fstream fk("STU.dat", ios:: in | ios::out | ios::binary);
-  cout << "Enter the ID No. whose data has to modified: ";
+  cout << "Enter the Roll No. whose data has to modified: ";
   cin >> rn;
   while (!fk.eof()) {
     pos = fk.tellg();
@@ -123,27 +117,25 @@ void marks::modifyData() {
       s1.rollno = r;
       cin.get();
       cout << "Enter Name of Student : ";
-      getline(cin, nm);;
+      gets(nm);
       '\n';
-      s1.name = nm;
-
- 
-
+      strcpy(s1.name, nm);
+      
       cout << "Enter Marks in Computer Programming : ";
       cin >> cp;
       s1.computerProgramming = cp;
       cout << "Enter Marks in Maths : ";
-      cin >> maths;
-      s1.maths = maths;
+      cin >> math;
+      s1.maths = math;
       cout << "Enter Marks in Report Writing : ";
       cin >> trw;
       s1.reportWriting = trw;
-      cout << "Enter Marks in Thermodynamics : ";
-      cin >> thermo;
-      s1.thermodynamics = thermo;
       cout << "Enter Marks in Biology : ";
       cin >> bio;
       s1.biology = bio;
+      cout << "Enter Marks in Thermodynamics : ";
+      cin >> thermo;
+      s1.thermodynamics = thermo;
       fk.seekg(pos);
       fk.write((char * ) & s1, sizeof(s1));
       cout << endl;
@@ -154,49 +146,45 @@ void marks::modifyData() {
     }
 
   }
-
   if (f == 'n')
     cout << "Record not found\n";
   fk.seekg(0);
-
   fk.close();
-
   m.dataMenu();
 }
 
 void marks::deleteData() {
+  ifstream fio("STU.dat", ios:: in );
+  ofstream file("TEMP.dat", ios::out);
+  int rno;
+  char found = 'n';
+  cout << "Enter the ID No. of Student whose Record is to be Deleted:\n";
+  cin >> rno;
+  while (!fio.eof()) {
+    fio.read((char * ) & m1, sizeof(m1));
+    if (m1.getRoll() == rno) {
+      found = 'y';
 
-   ifstream fio("STU.dat", ios:: in );
-   ofstream file("TEMP.dat", ios::out);
-   int rno;
-   char found = 'n';
-   cout << "Enter the ID No. of Student whose Record is to be Deleted:\n";
-   cin >> rno;
-   while (!fio.eof()) {
-     fio.read((char * ) & m1, sizeof(m1));
-     if (m1.getRoll() == rno) {
-       found = 'y';
+    } else {
+      file.write((char * ) & m1, sizeof(m1));
+    }
 
-     } else {
-       file.write((char * ) & m1, sizeof(m1));
-     }
-
-   }
-   if (found == 'n')
-     cout << "record not found\n";
-   fio.close();
-   file.close();
-   cout << "Record Deleted!" << endl;
-   remove("STU.dat");
-   rename("TEMP.dat", "STU.dat");
-
+  }
+  if (found == 'n')
+    cout << "record not found\n";
+  fio.close();
+  file.close();
+  cout << "Record Deleted!" << endl;
+  remove("STU.dat");
+  rename("TEMP.dat", "STU.dat");
 }
 
 void marks::searchData() {
+
   fstream fin("STU.dat", ios:: in | ios::binary);
   int rno, i = 0;
   char found = 'n';
-  cout << "Enter ID. to be searched :";
+  cout << "Enter ID No. to be searched :";
   cin >> rno;
   while (fin.read((char * ) & m, sizeof(m))) {
     if (m.getRoll() == rno) {
@@ -210,45 +198,46 @@ void marks::searchData() {
   }
   fin.close();
   m.dataMenu();
+
 }
 
 void marks::inputData() {
   cin.get();
-  cout << "Enter Roll No. : ";
+  cout << "Enter Id No. : ";
   cin >> rollno;
   cin.get();
   cout << "Enter Name of Student : ";
-  getline(cin, name);
+  gets(name);
+
   cout << "Enter Marks in Computer Programming : ";
   cin >> computerProgramming;
   cout << "Enter Marks in Maths : ";
   cin >> maths;
   cout << "Enter Marks in Report Writing : ";
   cin >> reportWriting;
-  cout << "Enter Marks in Thermodynamics : ";
-  cin >> thermodynamics;
   cout << "Enter Marks in Biology : ";
   cin >> biology;
+  cout << "Enter Marks in Thermodynamics : ";
+  cin >> thermodynamics;
   cout << endl;
 }
 
 void marks::viewData() {
 
-  cout << "Roll No. : ";
+  cout << "ID No. : ";
   cout << rollno << endl;
   cout << "Name of Student : ";
   cout << name << endl;
-
   cout << "Marks in Computer Programming : ";
   cout << computerProgramming << endl;
   cout << "Marks in Maths : ";
   cout << maths << endl;
   cout << "Marks in Report Writing : ";
   cout << reportWriting << endl;
-  cout << "Marks in Thermodynamics : ";
-  cout << thermodynamics << endl;
   cout << "Marks in Biology : ";
   cout << biology << endl;
+  cout << "Marks in Thermodynamics : ";
+  cout << thermodynamics << endl;
   cout << endl;
 
 }
@@ -268,7 +257,7 @@ int main() {
   if (fm) {
     l.dataMenu();
   } else {
-    cout << "No records Entered Press Enter key to Enter data:";
+    cout << "No records Entered Press Enter key to Enter data:"<<endl;
     l.addData();
   }
 
